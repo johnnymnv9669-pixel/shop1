@@ -36,7 +36,7 @@
 
   <script>
   // ใส่ลิงก์ CSV ที่ได้จาก Publish to the web
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/1W7Ak78fUsG9RjHYMBWmj0x9GHKFWXpx8wLY5f04MMa0/edit?usp=sharing";
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRieAboeby5A7nHJhvVyG532EudqvvfvvPal-u2zO0rfAkRDw_03O06ZNdU0aptATWV83D5zSH9Vn2/pub?gid=0&single=true&output=csv";
   const WHATSAPP_PHONE = "8562099872754";
 
   async function load(){
