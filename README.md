@@ -29,7 +29,7 @@ h1 { color:#4da3ff; text-align:center; }
 <div id="product-list" style="text-align:center;">กำลังดึงข้อมูล...</div>
 
 <script>
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx1zqJSgr0MKfcjnNQkaYSnXzoNq9DorMzigVXN0yqdfGCCBtqBU4uSevGJ6DMdc2imNw/exec"; // ใส่ URL Web App ของคุณ
+const WEBAPP_URL = "https://script.google.com/macros/s/XXXXXXXXXXXX/exec"; // ใส่ URL Web App ของคุณ
 
 function driveDirectLink(url){
   if(!url) return "";
@@ -37,16 +37,14 @@ function driveDirectLink(url){
   return match ? https://drive.google.com/uc?export=view&id=${match[1]} : url;
 }
 
-// สร้าง Lazy Load Image
 function createLazyImage(src, alt){
   const img = document.createElement("img");
   img.alt = alt;
-  img.loading = "lazy"; // lazy load
+  img.loading = "lazy";
   img.src = src;
   return img;
 }
 
-// โหลดสินค้า
 async function loadProducts(){
   try{
     const res = await fetch(WEBAPP_URL);
@@ -63,7 +61,6 @@ async function loadProducts(){
       const div = document.createElement("div");
       div.className = "product";
 
-      // Skeleton loader ก่อนรูปโหลด
       const skeleton = document.createElement("div");
       skeleton.className = "skeleton";
       div.appendChild(skeleton);
@@ -73,12 +70,10 @@ async function loadProducts(){
       const pic = driveDirectLink(item.Picture || "");
       const waLink = https://wa.me/+8562099872754?text=${encodeURIComponent(`สั่งซื้อ: ${name} ราคา: ${price} บาท)}`;
 
-      // สร้าง lazy load image
       const img = createLazyImage(pic, name);
-      img.onload = () => skeleton.remove(); // ลบ skeleton เมื่อโหลดรูปเสร็จ
+      img.onload = () => skeleton.remove();
       div.appendChild(img);
 
-      // ชื่อและราคา
       const h3 = document.createElement("h3"); h3.innerText = name; div.appendChild(h3);
       const p = document.createElement("p"); p.innerText = ฿${price}; div.appendChild(p);
       const a = document.createElement("a"); a.className="buy-btn"; a.href=waLink; a.target="_blank"; a.innerText="สั่งซื้อ"; div.appendChild(a);
