@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -55,13 +56,32 @@
 const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRieAboeby5A7nHJhvVyG532EudqvvfvvPal-u2zO0rfAkRDw_03O06ZNdU0aptATWV83D5zSH9Vn2/pub?gid=0&single=true&output=csv";
 const CSV_URL = "https://corsproxy.io/?" + encodeURIComponent(SHEET_CSV);
 
-// ฟังก์ชันแปลง Google Drive URL → Direct link
-function convertDriveLink(url) {
-  const match = url.match(/\/d\/(.*?)\//);
-  if (match && match[1]) {
-    return https://drive.google.com/uc?export=view&id=${match[1]};
+// ฟังก์ชันแปลง URL จากหลายแหล่งเป็น direct link
+function convertImageLink(url) {
+  url = url.trim();
+
+  // Google Drive
+  const driveMatch = url.match(/\/d\/(.*?)\//);
+  if (driveMatch && driveMatch[1]) {
+    return https://drive.google.com/uc?export=view&id=${driveMatch[1]};
   }
-  return url; // ถ้าไม่ใช่ Google Drive ให้คืนค่าเดิม
+
+  // Google Photos (แชร์สาธารณะ)
+  if (url.includes("googleusercontent.com")) {
+    return url; // ลิงก์นี้ใช้ตรงได้เลย
+  }
+
+  // Dropbox
+  if (url.includes("dropbox.com")) {
+    return url.replace("?dl=0", "?raw=1");
+  }
+
+  // ถ้าเป็น direct image link อยู่แล้ว (jpg/png/webp/gif)
+  if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
+    return url;
+  }
+
+  return url; // คืนค่าดั้งเดิมถ้าไม่เข้าเงื่อนไขใด
 }
 
 fetch(CSV_URL)
@@ -78,7 +98,7 @@ fetch(CSV_URL)
     productList.className = "product-grid";
 
     rows.forEach(row => {
-      let imgUrl = convertDriveLink(row[picIdx].trim());
+      let imgUrl = convertImageLink(row[picIdx]);
       const div = document.createElement("div");
       div.className = "product";
       div.innerHTML = `
