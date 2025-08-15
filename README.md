@@ -1,44 +1,4 @@
-[23:09, 15/8/2568] Nit: <!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>shop1</title>
-<style>
-  body {
-    font-family: sans-serif;
-    background-color: #304674;
-    color: white;
-    margin: 0;
-    padding: 20px;
-  }
-  h1 {
-    color: #4da3ff;
-  }
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-  }
-  .product {
-    background: rgba(255,255,255,0.1);
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-  }
-  .product img {
-    max-width: 100%;
-    border-radius: 5px;
-  }
-  .buy-btn {
-    display: inline-block;
-    background: #4da3ff;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-top: 5px;
-    text-d…
-[23:20, 15/8/2568] Nit: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
