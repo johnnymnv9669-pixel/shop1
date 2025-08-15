@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -56,6 +55,15 @@
 const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRieAboeby5A7nHJhvVyG532EudqvvfvvPal-u2zO0rfAkRDw_03O06ZNdU0aptATWV83D5zSH9Vn2/pub?gid=0&single=true&output=csv";
 const CSV_URL = "https://corsproxy.io/?" + encodeURIComponent(SHEET_CSV);
 
+// ฟังก์ชันแปลง Google Drive URL → Direct link
+function convertDriveLink(url) {
+  const match = url.match(/\/d\/(.*?)\//);
+  if (match && match[1]) {
+    return https://drive.google.com/uc?export=view&id=${match[1]};
+  }
+  return url; // ถ้าไม่ใช่ Google Drive ให้คืนค่าเดิม
+}
+
 fetch(CSV_URL)
   .then(res => res.text())
   .then(data => {
@@ -70,10 +78,11 @@ fetch(CSV_URL)
     productList.className = "product-grid";
 
     rows.forEach(row => {
+      let imgUrl = convertDriveLink(row[picIdx].trim());
       const div = document.createElement("div");
       div.className = "product";
       div.innerHTML = `
-        <img src="${row[picIdx]}" alt="${row[nameIdx]}">
+        <img src="${imgUrl}" alt="${row[nameIdx]}">
         <h3>${row[nameIdx]}</h3>
         <p>฿${row[priceIdx]}</p>
         <a class="buy-btn" href="https://wa.me/+8562099872754?text=สั่งซื้อ: ${encodeURIComponent(row[nameIdx])}" target="_blank">สั่งซื้อ</a>
