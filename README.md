@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -11,9 +12,7 @@
     margin: 0;
     padding: 20px;
   }
-  h1 {
-    color: #4da3ff;
-  }
+  h1 { color: #4da3ff; }
   .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -39,11 +38,10 @@
     text-decoration: none;
   }
   @media (max-width: 600px) {
-    .product-grid {
-      grid-template-columns: repeat(1, 1fr);
-    }
+    .product-grid { grid-template-columns: repeat(1, 1fr); }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 <h1>shop1</h1>
@@ -55,8 +53,8 @@
 const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRieAboeby5A7nHJhvVyG532EudqvvfvvPal-u2zO0rfAkRDw_03O06ZNdU0aptATWV83D5zSH9Vn2/pub?gid=0&single=true&output=csv";
 const CSV_URL = "https://corsproxy.io/?" + encodeURIComponent(SHEET_CSV);
 
-// ฟังก์ชันแปลง URL จากหลายแหล่งเป็น direct link
 function convertImageLink(url) {
+  if (!url) return "";
   url = url.trim();
 
   // Google Drive
@@ -65,9 +63,9 @@ function convertImageLink(url) {
     return https://drive.google.com/uc?export=view&id=${driveMatch[1]};
   }
 
-  // Google Photos (แชร์สาธารณะ)
+  // Google Photos
   if (url.includes("googleusercontent.com")) {
-    return url; // ลิงก์นี้ใช้ตรงได้เลย
+    return url;
   }
 
   // Dropbox
@@ -75,46 +73,43 @@ function convertImageLink(url) {
     return url.replace("?dl=0", "?raw=1");
   }
 
-  // ถ้าเป็น direct image link อยู่แล้ว (jpg/png/webp/gif)
+  // Direct image link
   if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
     return url;
   }
 
-  return url; // คืนค่าดั้งเดิมถ้าไม่เข้าเงื่อนไขใด
+  return url;
 }
 
-fetch(CSV_URL)
-  .then(res => res.text())
-  .then(data => {
-    const rows = data.trim().split("\n").map(r => r.split(","));
-    const headers = rows.shift();
-    const nameIdx = headers.indexOf("Name");
-    const priceIdx = headers.indexOf("Price");
-    const picIdx = headers.indexOf("Picture");
-    const linkIdx = headers.indexOf("Link");
-
+Papa.parse(CSV_URL, {
+  download: true,
+  header: true,
+  complete: function(results) {
+    const data = results.data;
     const productList = document.createElement("div");
     productList.className = "product-grid";
 
-    rows.forEach(row => {
-      let imgUrl = convertImageLink(row[picIdx]);
+    data.forEach(item => {
+      if (!item.Name || !item.Price) return; // ข้ามแถวว่าง
+      let imgUrl = convertImageLink(item.Picture);
       const div = document.createElement("div");
       div.className = "product";
       div.innerHTML = `
-        <img src="${imgUrl}" alt="${row[nameIdx]}">
-        <h3>${row[nameIdx]}</h3>
-        <p>฿${row[priceIdx]}</p>
-        <a class="buy-btn" href="https://wa.me/+8562099872754?text=สั่งซื้อ: ${encodeURIComponent(row[nameIdx])}" target="_blank">สั่งซื้อ</a>
+        <img src="${imgUrl}" alt="${item.Name}">
+        <h3>${item.Name}</h3>
+        <p>฿${item.Price}</p>
+        <a class="buy-btn" href="https://wa.me/+8562099872754?text=สั่งซื้อ: ${encodeURIComponent(item.Name)}" target="_blank">สั่งซื้อ</a>
       `;
       productList.appendChild(div);
     });
 
     document.getElementById("product-list").innerHTML = "";
     document.getElementById("product-list").appendChild(productList);
-  })
-  .catch(err => {
+  },
+  error: function(err) {
     document.getElementById("product-list").innerText = "ดึงข้อมูลไม่ได้: " + err;
-  });
+  }
+});
 </script>
 </body>
 </html>
